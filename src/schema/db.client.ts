@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
+import { userTable } from "./user.schema";
 const pool = mysql.createPool({
   host: "localhost",
   user: "root",
@@ -10,4 +11,8 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-export const client = drizzle(pool);
+export const client = drizzle(pool, {
+  schema: { userTable },
+  mode: "default",
+  logger: true,
+});

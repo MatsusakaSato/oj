@@ -1,34 +1,43 @@
+import { UserDTO } from "@/types/dto.types";
 import { client } from "@/schema/db.client";
-import {
-  UserInsertModel,
-  UserSelectModel,
-  userTable,
-} from "@/schema/user.schema";
-import type { userDTO } from "@/types/dto.types";
+import { UserInsertModel, userTable } from "@/schema/user.schema";
 import type { UserVO } from "@/types/vo.types";
-import { eq } from "drizzle-orm";
-import crypto from "crypto";
+import { and, eq } from "drizzle-orm";
 import * as bcrypt from "bcrypt";
-const login = async (user: userDTO): Promise<UserVO> => {
-  
+export const login = async (userdto: UserDTO): Promise<UserVO> => {
+  const user = await client.query.userTable.findFirst({
+    where: and(eq(userTable.email, userdto.email)),
+    columns: {
+      username: true,
+      role: true,
+      password: true,
+    },
+  });
+  if (!user) {
+    throw new Error("用户名或密码错误");
+  }
+  const isVaild = await bcrypt.compare(userdto.password, user.password);
+  if (!isVaild) {
+    throw new Error("用户名或密码错误");
+  }
+  const { username, role } = user;
   return {
-    username: "",
-    role: "user",
+    username,
+    role,
   };
 };
-const register = async (user: userDTO): Promise<UserVO> => {
+export const register = async (userdto: UserDTO): Promise<UserVO> => {
+  const pwd_hash = await bcrypt.hash(userdto.password, bcrypt.genSaltSync());
   return await client.transaction(async (tx) => {
-    const existingUsers: UserSelectModel[] = await tx
-      .select()
-      .from(userTable)
-      .where(eq(userTable.email, user.email))
-      .limit(1);
-    if (existingUsers.length !== 0) {
+    const existingUsers = await tx.query.userTable.findFirst({
+      where: eq(userTable.email, userdto.email),
+      columns: { id: true },
+    });
+    if (existingUsers) {
       throw new Error("用户已存在");
     }
-    const pwd_hash = await bcrypt.hash(user.password, 10);
     const newUser: UserInsertModel = {
-      ...user,
+      ...userdto,
       role: "user",
       password: pwd_hash,
     };
@@ -36,10 +45,17 @@ const register = async (user: userDTO): Promise<UserVO> => {
     if (!ids || ids.length === 0) {
       throw new Error("注册失败");
     }
-    const [{ username, role }]: UserSelectModel[] = await tx
-      .select()
-      .from(userTable)
-      .where(eq(userTable.id, ids[0].id));
+    const user = await tx.query.userTable.findFirst({
+      where: eq(userTable.id, ids[0].id),
+      columns: {
+        username: true,
+        role: true,
+      },
+    });
+    if (!user) {
+      throw new Error("系统错误");
+    }
+    const { username, role } = user;
     return {
       username,
       role,
