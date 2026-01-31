@@ -1,6 +1,14 @@
 import { Router } from "@/types/router.types";
+import { fa } from "zod/v4/locales";
 
-const routes = [
+const routes: Router[] = [
+  {
+    key: "home",
+    label: "首页",
+    href: "/",
+    showInMenu: false,
+    requiresRole: [],
+  },
   {
     key: "problemList",
     label: "题目列表",
@@ -22,5 +30,12 @@ const routes = [
     showInMenu: true,
     requiresRole: ["user", "admin"],
   },
-] as const satisfies Router[];
+  {
+    key: "login",
+    label: "登陆",
+    href: "/login",
+    showInMenu: false,
+    requiresRole: [],
+  },
+];
 export default routes;
