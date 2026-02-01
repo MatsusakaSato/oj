@@ -18,9 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
-import { request } from "@/common/Request";
-import { UserVO } from "@/types/vo.types";
 import userStore from "@/store/user.store";
+import { loginAction, registerAction } from "@/action/user.action";
 
 // 1. 定义表单验证规则（Zod Schema）
 // 登录表单规则
@@ -81,25 +80,23 @@ export default function LoginRegisterForm() {
 
   // 5. 表单提交处理
   const onLoginSubmit = async (values: LoginFormValues) => {
-    try {
-      const user = await request.post<UserVO>("/api/user/login", values);
-      if (user) {
-        setUser(user);
-        router.push("/");
-      }
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "登录失败，请重试");
+    const resp = await loginAction({ ...values, username: "" });
+    if (resp.code !== 0) {
+      toast.error(resp.msg ?? "登录失败，请重试");
+      return;
     }
+    setUser(resp?.data);
+    router.push("/");
   };
 
   const onRegisterSubmit = async (values: RegisterFormValues) => {
-    try {
-      await request.post<UserVO>("/api/user/register", values);
-      toast.success("注册成功");
-      setActiveTab("login");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "注册失败，请重试");
+    const resp = await registerAction(values);
+    if (resp.code !== 0) {
+      toast.error(resp.msg ?? "注册失败，请重试");
+      return;
     }
+    toast.success("注册成功");
+    setActiveTab("login");
   };
 
   return (
