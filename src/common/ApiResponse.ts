@@ -1,3 +1,5 @@
+import { ApiCode } from "@/enum/enum";
+
 export default class R<T = void> {
   code: number;
   msg: string;
@@ -8,9 +10,13 @@ export default class R<T = void> {
     this.data = data;
   }
   static ok<U = void>(msg: string, data?: U): R<U> {
-    return data === undefined ? new R(0, msg) : new R(200, msg, data);
+    return data === undefined
+      ? new R(ApiCode.SUCCESS, msg)
+      : new R(ApiCode.SUCCESS, msg, data);
   }
   static error<V = void>(msg: string, data?: V): R<V> {
-    return data === undefined ? new R(1, msg) : new R(400, msg, data);
+    return data === undefined
+      ? new R(ApiCode.ERROR, msg)
+      : new R(ApiCode.ERROR, msg, data);
   }
 }

@@ -1,4 +1,4 @@
-import type { Role } from "@/types/vo.types";
+import { Role } from "@/enum/enum";
 export interface Router {
   key: string;
   label: string;
