@@ -1,12 +1,20 @@
-import { Router } from "@/types/router.types";
 import { Role } from "@/enum/enum";
+
+export interface Router {
+  key: string;
+  label: string;
+  href: string;
+  showInMenu?: boolean;
+  requiresRole: Role[];
+  children?: Router[];
+}
 
 const routes: Router[] = [
   {
     key: "home",
     label: "首页",
     href: "/",
-    showInMenu: false,
+    showInMenu: true,
     requiresRole: [],
   },
   {

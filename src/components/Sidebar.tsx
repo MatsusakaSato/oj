@@ -2,17 +2,18 @@
 "use client";
 
 import { useState } from "react";
-import { Users, LogOut, Menu, LucideProps, User } from "lucide-react";
+import { Users, LogOut, Menu, LucideProps, User, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import routes from "@/router/router";
 import userStore from "@/store/user.store";
+import Link from "next/link";
 
 export default function Sidebar() {
   const user = userStore((state) => state.user);
   const setUser = userStore((state) => state.setUser);
   const logout = () => {
-    setUser(null);
+    setUser({});
   };
 
   const iconMap: Record<
@@ -22,6 +23,7 @@ export default function Sidebar() {
     problemList: Menu,
     userList: Users,
     profile: User,
+    home: Home,
   };
   const sidebarItems = routes
     .filter((route) => route.showInMenu === true)
@@ -44,14 +46,16 @@ export default function Sidebar() {
         <ul className="space-y-4">
           {sidebarItems.map((item) => (
             <li key={item.title}>
-              <Button
-                variant={activeItem === item.title ? "secondary" : "ghost"}
-                className={cn("w-full justify-start gap-3")}
-                onClick={() => setActiveItem(item.title)}
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.title}</span>
-              </Button>
+              <Link href={item.path}>
+                <Button
+                  variant={activeItem === item.title ? "secondary" : "ghost"}
+                  className={cn("w-full justify-start gap-3")}
+                  onClick={() => setActiveItem(item.title)}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.title}</span>
+                </Button>
+              </Link>
             </li>
           ))}
         </ul>

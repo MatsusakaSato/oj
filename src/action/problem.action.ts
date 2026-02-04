@@ -1,12 +1,12 @@
 "use server";
-import { ProblemDTO } from "@/types/dto.types";
-import { ProblemVO } from "@/types/vo.types";
+
 import { problemRepo } from "@/repository/problem.repo";
+import { ProblemInsertModel } from "@/schema/problem.schema";
 
 export const createProblemAction = async (
-  problem: ProblemDTO,
+  problem: ProblemInsertModel,
   userId: number,
-): Promise<boolean> => {
+) => {
   return await problemRepo.createProblem({
     ...problem,
     userId,
@@ -16,63 +16,32 @@ export const createProblemAction = async (
   });
 };
 
-export const getProblemByIdAction = async (
-  id: number,
-): Promise<ProblemVO | undefined> => {
+export const getProblemByIdAction = async (id: number) => {
   const problem = await problemRepo.getProblemById(id);
   if (!problem) return undefined;
-
-  return {
-    id: problem.id,
-    title: problem.title,
-    content: problem.content,
-    tags: problem.tags ?? undefined,
-    submitNum: problem.submitNum,
-    acceptedNum: problem.acceptedNum,
-    userId: problem.userId,
-    createdAt: problem.createdAt.toISOString(),
-    updatedAt: problem.updatedAt.toISOString(),
-  };
+  return problem;
 };
 
-export const getProblemsAction = async (
-  limit?: number,
-  offset?: number,
-): Promise<ProblemVO[]> => {
+export const getProblemsAction = async (limit?: number, offset?: number) => {
   const problems = await problemRepo.getProblems(limit, offset);
-
-  return problems.map((problem) => ({
-    id: problem.id,
-    title: problem.title,
-    content: problem.content,
-    tags: problem.tags ?? undefined,
-    submitNum: problem.submitNum,
-    acceptedNum: problem.acceptedNum,
-    userId: problem.userId,
-    createdAt: problem.createdAt.toISOString(),
-    updatedAt: problem.updatedAt.toISOString(),
-  }));
+  return problems;
 };
 
 export const updateProblemAction = async (
   id: number,
-  problem: ProblemDTO,
-): Promise<boolean> => {
+  problem: ProblemInsertModel,
+) => {
   return await problemRepo.updateProblem(id, problem);
 };
 
-export const deleteProblemAction = async (id: number): Promise<boolean> => {
+export const deleteProblemAction = async (id: number) => {
   return await problemRepo.deleteProblem(id);
 };
 
-export const incrementSubmitCountAction = async (
-  problemId: number,
-): Promise<boolean> => {
+export const incrementSubmitCountAction = async (problemId: number) => {
   return await problemRepo.incrementSubmitCount(problemId);
 };
 
-export const incrementAcceptedCountAction = async (
-  problemId: number,
-): Promise<boolean> => {
+export const incrementAcceptedCountAction = async (problemId: number) => {
   return await problemRepo.incrementAcceptedCount(problemId);
 };

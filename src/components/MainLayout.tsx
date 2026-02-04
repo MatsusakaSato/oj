@@ -1,7 +1,7 @@
 // src/components/layout/MainLayout.tsx
 import { ReactNode } from "react";
-import Header from "@/components/layout/Header";
-import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
 
 // 接收子元素作为props，类型为ReactNode
 interface MainLayoutProps {

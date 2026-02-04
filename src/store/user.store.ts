@@ -1,16 +1,16 @@
+import { UserSelectModel } from "@/schema/user.schema";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { UserVO } from "@/types/vo.types";
-import { Maybe } from "@/types/common";
+
 interface UserStore {
-  user: Maybe<UserVO>;
-  setUser: (user: Maybe<UserVO>) => void;
+  user: Partial<UserSelectModel>;
+  setUser: (user: Partial<UserSelectModel>) => void;
 }
 const userStore = create<UserStore>()(
   persist(
     (set) => ({
-      user: null,
-      setUser: (user: Maybe<UserVO>) => set({ user }),
+      user: {},
+      setUser: (user: Partial<UserSelectModel>) => set({ user }),
     }),
     {
       name: "user-storage",
