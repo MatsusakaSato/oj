@@ -37,7 +37,7 @@ export default function Header() {
           <img src="https://picsum.photos/200/200" alt="User avatar" />
         </Avatar>
         {/* 用户名文本：大屏显示，小屏隐藏，防止占空间 */}
-        <div className="flex flex-col gap-0.5 items-center">
+        <div className="flex flex-col gap-0.5 items-start">
           <Link href={"/login"}>
             <span className="text-base font-medium hidden md:inline-block">
               {user?.username ?? "未登录"}

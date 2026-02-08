@@ -1,10 +1,8 @@
-'use client'
-import { Button } from "@/components/ui/button";
+"use client";
+import CodeEditor from "@/components/CodeEditor";
 
 export default function HomePage() {
   return (
-    <main className="flex-1 flex justify-center items-center">
-      <Button>你好世界！</Button>
-    </main>
+    <h1 className="text-3xl font-bold text-center">Hello World</h1>
   );
 }

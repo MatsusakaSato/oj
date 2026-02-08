@@ -28,6 +28,8 @@ const ProfileComponent = ({ user }: ProfileProps) => {
       email: user.email,
     },
   });
+  //TODO 完善头像上传功能
+  //解决页面刷新后信息不会立即更新的问题
   const handleUpdateUserInfo = async () => {
     const formData = form.getValues();
     const userDTO = {

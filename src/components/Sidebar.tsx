@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Users, LogOut, Menu, LucideProps, User, Home } from "lucide-react";
+import { Users, LogOut, Menu, LucideProps, User, Home,PlusCircle} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import routes from "@/router/router";
@@ -18,11 +18,12 @@ export default function Sidebar() {
   const iconMap: Record<
     (typeof routes)[number]["key"],
     React.FC<LucideProps>
-  > = {
+    > = {
+    home: Home,
     problemList: Menu,
     userList: Users,
     profile: User,
-    home: Home,
+    addProblem: PlusCircle,
   };
   const sidebarItems = routes
     .filter((route) => route.showInMenu === true)

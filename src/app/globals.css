@@ -1,6 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "bytemd/dist/index.css";
+
 body html {
   margin: 0;
   padding: 0;

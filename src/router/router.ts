@@ -45,5 +45,12 @@ const routes: Router[] = [
     showInMenu: false,
     requiresRole: [],
   },
+  {
+    key: "addProblem",
+    label: "添加题目",
+    href: "/addProblem",
+    showInMenu: true,
+    requiresRole: [Role.ADMIN],
+  },
 ];
 export default routes;
