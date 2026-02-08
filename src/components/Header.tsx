@@ -4,11 +4,11 @@
 import { Search, Code2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar } from "@/components/ui/avatar";
-import userStore from "@/store/user.store";
 import Link from "next/link";
+import useUser from "@/hooks/useUser";
 
 export default function Header() {
-  const user = userStore((state) => state.user);
+  const user = useUser();
   return (
     <div className="h-full px-4 flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -34,7 +34,7 @@ export default function Header() {
         {/* 用户名文本：大屏显示，小屏隐藏，防止占空间 */}
         <Link href={"/login"}>
           <span className="text-base font-medium hidden md:inline-block">
-            {user?.username ?? "未登录"}
+            {user?.user?.username ?? "未登录"}
           </span>
         </Link>
       </div>

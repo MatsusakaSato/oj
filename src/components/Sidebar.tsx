@@ -1,4 +1,3 @@
-// components/layout/Sidebar.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,14 +5,14 @@ import { Users, LogOut, Menu, LucideProps, User, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import routes from "@/router/router";
-import userStore from "@/store/user.store";
+
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Sidebar() {
-  const user = userStore((state) => state.user);
-  const setUser = userStore((state) => state.setUser);
+  const { data: session } = useSession();
   const logout = () => {
-    setUser({});
+    signOut();
   };
 
   const iconMap: Record<
@@ -29,7 +28,7 @@ export default function Sidebar() {
     .filter((route) => route.showInMenu === true)
     .filter((route) => {
       if (route.requiresRole.length === 0) return true;
-      return route.requiresRole.some((item) => item === user?.role);
+      return route.requiresRole.some((item) => item === session?.user?.role);
     })
     .map((route) => ({
       title: route.label,

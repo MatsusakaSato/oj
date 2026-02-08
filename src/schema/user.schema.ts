@@ -9,8 +9,11 @@ import {
 
 export const userTable = mysqlTable("user", {
   id: int("id").autoincrement().primaryKey(),
-  username: varchar("username", { length: 20 }).notNull().unique(),
-  role: varchar("role", { length: 20 }).notNull().$type<Role>(),
+  username: varchar("username", { length: 20 }).notNull(),
+  role: varchar("role", { length: 20 })
+    .notNull()
+    .default(Role.USER)
+    .$type<Role>(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),

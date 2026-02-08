@@ -38,10 +38,8 @@ export default function RootLayout({
           "min-h-screen bg-background text-foreground m-0 p-0",
         )}
       >
-        {/* 直接使用MainLayout包裹子元素，简化根布局 */}
         <MainLayout>{children}</MainLayout>
-        {/* 全局提示组件保留在根布局 */}
-        <Toaster position="top-center" richColors closeButton />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

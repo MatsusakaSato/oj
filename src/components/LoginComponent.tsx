@@ -18,8 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
-import userStore from "@/store/user.store";
 import { loginAction, registerAction } from "@/action/user.action";
+import { signIn } from "next-auth/react";
 
 // 1. 定义表单验证规则（Zod Schema）
 // 登录表单规则
@@ -50,7 +50,6 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function LoginRegisterForm() {
   const router = useRouter();
-  const setUser = userStore((s) => s.setUser);
 
   // 2. 状态管理：密码显隐（登录+注册各一个）+ 当前 Tab（注册成功后切到登录）
   const [activeTab, setActiveTab] = useState<string>("login");
@@ -80,12 +79,15 @@ export default function LoginRegisterForm() {
 
   // 5. 表单提交处理
   const onLoginSubmit = async (values: LoginFormValues) => {
-    const resp = await loginAction({ ...values, username: "" });
-    if (resp.code !== 0) {
-      toast.error(resp.msg ?? "登录失败，请重试");
+    const resp = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+    if (resp?.error) {
+      toast.error(resp.error ?? "登录失败，请重试");
       return;
     }
-    setUser(resp?.data);
     router.push("/");
   };
 

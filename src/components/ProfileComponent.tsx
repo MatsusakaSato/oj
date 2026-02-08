@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { updateUserInfoAction } from "@/action/user.action";
-import userStore from "@/store/user.store";
 import { useRouter } from "next/navigation";
 import { UserSelectModel } from "@/schema/user.schema";
 
@@ -37,7 +36,6 @@ const ProfileComponent = ({ user }: ProfileProps) => {
       id: user.id,
     };
     await updateUserInfoAction(userDTO);
-    userStore.setState({ user: { ...userDTO, role: user.role } });
     router.refresh();
   };
   const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null);
