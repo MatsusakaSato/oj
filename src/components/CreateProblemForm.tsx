@@ -52,7 +52,7 @@ interface JudgeCaseFieldProps {
 function JudgeCaseField({ index, onRemove }: JudgeCaseFieldProps) {
   return (
     <div className="space-y-3 rounded-lg border p-4 bg-card">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4">
         <span className="text-sm font-medium">测试用例 {index + 1}</span>
         <Button
           type="button"
@@ -64,38 +64,40 @@ function JudgeCaseField({ index, onRemove }: JudgeCaseFieldProps) {
           <Trash2 className="h-4 w-4" />
         </Button>
       </div>
-      <FormField
-        name={`judgeCase.${index}.input`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>输入</FormLabel>
-            <FormControl>
-              <textarea
-                {...field}
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="输入测试数据..."
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        name={`judgeCase.${index}.output`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>输出</FormLabel>
-            <FormControl>
-              <textarea
-                {...field}
-                className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="期望输出..."
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          name={`judgeCase.${index}.input`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>输入</FormLabel>
+              <FormControl>
+                <textarea
+                  {...field}
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="输入测试数据..."
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name={`judgeCase.${index}.output`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>输出</FormLabel>
+              <FormControl>
+                <textarea
+                  {...field}
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="期望输出..."
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
     </div>
   );
 }
@@ -162,18 +164,30 @@ function TagsInput({ value, onChange }: TagsInputProps) {
   );
 }
 
-export default function CreateProblemForm() {
+interface CreateProblemFormProps {
+  initialValue?: Partial<CreateProblemFormValues>;
+  onSubmit?: (data: CreateProblemFormValues) => void;
+}
+
+export default function CreateProblemForm({
+  initialValue,
+  onSubmit: onSubmitCallback = (data: CreateProblemFormValues) => {
+    console.log("=== 表单提交数据 ===");
+    console.log(data);
+    console.log("========================");
+  },
+}: CreateProblemFormProps) {
   const form = useForm<CreateProblemFormValues>({
     resolver: zodResolver(createProblemSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      tags: [],
-      answer: "",
-      judgeCase: [{ input: "", output: "" }],
-      judgeConfig: {
-        timeLimit: 1000,
-        memoryLimit: 256,
+      title: initialValue?.title || "",
+      content: initialValue?.content || "",
+      tags: initialValue?.tags || [],
+      answer: initialValue?.answer || "",
+      judgeCase: initialValue?.judgeCase || [{ input: "", output: "" }],
+      judgeConfig: initialValue?.judgeConfig || {
+        timeLimit: initialValue?.judgeConfig?.timeLimit || 1000,
+        memoryLimit: initialValue?.judgeConfig?.memoryLimit || 256,
       },
     },
   });
@@ -183,15 +197,15 @@ export default function CreateProblemForm() {
     name: "judgeCase",
   });
 
-  const onSubmit = (data: CreateProblemFormValues) => {
-    console.log("Form submitted:", data);
+  const handleFormSubmit = (data: CreateProblemFormValues) => {
+    onSubmitCallback?.(data);
   };
 
   return (
     <div className="h-full flex flex-col min-h-0">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(handleFormSubmit)}
           className="flex-1 flex flex-col min-h-0"
         >
           <div className="flex-1 overflow-y-auto min-h-0">
