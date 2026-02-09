@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import "../globals.css";
 import { Toaster } from "@/components/ui/sonner";
 // 引入抽离后的MainLayout组件
-import MainLayout from "@/components/MainLayout";
+import MainLayout from "@/components/layout/MainLayout";
 import { cn } from "@/lib/utils";
 
 // 全局字体配置保留

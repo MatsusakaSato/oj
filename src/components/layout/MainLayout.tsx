@@ -1,8 +1,8 @@
 "use client";
 // src/components/layout/MainLayout.tsx
 import { ReactNode } from "react";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
+import Header from "@/components/layout/Header";
+import Sidebar from "@/components/layout/Sidebar";
 import { SessionProvider } from "next-auth/react";
 
 // 接收子元素作为props，类型为ReactNode
