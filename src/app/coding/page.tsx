@@ -5,7 +5,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import CodeEditor from "@/components/editor/CodeEditor";
-import MdViewComponent from "@/components/MdViewComponent";
+import MdViewComponent from "@/components/markdown/MdViewComponent";
 
 export default function CodingPage() {
   const problemContent = `# A+B Problem (高精度进阶版)

@@ -20,19 +20,21 @@ export default function MainLayout({ children }: MainLayoutProps) {
         </header>
 
         {/* 侧边栏：仅占第一列，纵向跨2行 */}
-        <aside className="col-span-1 row-span-2 bg-card border-r z-10 overflow-y-auto">
+        <aside className="col-span-1 row-span-2 bg-card border-r z-10 overflow-y-auto scrollbar-hide">
           <Sidebar />
         </aside>
 
         {/* 主内容区：仅占第二列，纵向跨2行，包含页脚自适应逻辑 */}
-        <main className="col-span-1 row-span-2 overflow-y-auto bg-muted/20 relative z-20">
-          <div className="h-full flex flex-col px-6 py-4">
-            <div className="flex-1 flex flex-col h-full">{children}</div>
-            <footer className="mt-auto py-4 border-t bg-card">
-              <div className="container mx-auto text-center text-sm text-muted-foreground">
-                © 2026 Online Judge | Built with Next.js
-              </div>
-            </footer>
+        <main className="col-span-1 row-span-2 bg-muted/20 relative z-20 flex flex-col">
+          <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-4">
+            <div className="min-h-full flex flex-col">
+              <div className="flex-1">{children}</div>
+              <footer className="py-4 border-t bg-card mt-4">
+                <div className="container mx-auto text-center text-sm text-muted-foreground">
+                  © 2026 Online Judge | Built with Next.js
+                </div>
+              </footer>
+            </div>
           </div>
         </main>
       </div>
