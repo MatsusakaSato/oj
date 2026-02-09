@@ -46,9 +46,9 @@ const routes: Router[] = [
     requiresRole: [],
   },
   {
-    key: "addProblem",
-    label: "添加题目",
-    href: "/addProblem",
+    key: "createProblem",
+    label: "创建题目",
+    href: "/create-problem",
     showInMenu: true,
     requiresRole: [Role.ADMIN],
   },

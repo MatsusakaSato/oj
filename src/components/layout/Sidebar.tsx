@@ -23,7 +23,7 @@ export default function Sidebar() {
     problemList: Menu,
     userList: Users,
     profile: User,
-    addProblem: PlusCircle,
+    createProblem: PlusCircle,
   };
   const sidebarItems = routes
     .filter((route) => route.showInMenu === true)
