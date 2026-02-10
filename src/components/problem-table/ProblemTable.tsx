@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, CheckSquare, Square } from "lucide-react";
 import { ProblemBasicInfo } from "@/repository/problem.repo";
 
 interface DataTableProps<TData, TValue> {
@@ -41,6 +41,14 @@ export default function DataTable<TData, TValue>({
     console.log("批量删除题目:", selectedIds);
   };
 
+  const handleSelectAll = () => {
+    table.toggleAllPageRowsSelected(true);
+  };
+
+  const handleDeselectAll = () => {
+    table.toggleAllPageRowsSelected(false);
+  };
+
   return (
     <div className="space-y-4 min-w-[600px]">
       {selectedRows && selectedRows.length > 0 && (
@@ -48,6 +56,24 @@ export default function DataTable<TData, TValue>({
           <span className="text-sm text-red-700">
             已选择 {selectedRows.length} 个题目
           </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDeselectAll}
+            className="gap-2"
+          >
+            <Square className="h-4 w-4" />
+            取消
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSelectAll}
+            className="gap-2"
+          >
+            <CheckSquare className="h-4 w-4" />
+            全选
+          </Button>
           <Button
             variant="destructive"
             size="sm"
@@ -62,22 +88,6 @@ export default function DataTable<TData, TValue>({
 
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

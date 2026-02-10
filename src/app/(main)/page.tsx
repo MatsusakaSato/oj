@@ -1,6 +1,15 @@
-"use client";
-import CodeEditor from "@/components/editor/CodeEditor";
+import ProblemListClient from "@/components/problem-table/ProblemListClient";
+import { getProblems, getProblemsCount } from "@/repository/problem.repo";
 
-export default function HomePage() {
-  return <h1 className="text-3xl font-bold text-center">Hello World</h1>;
+const PAGE_SIZE = 20;
+
+export default async function ProblemListPage() {
+  const initialData = await getProblems(PAGE_SIZE, 0);
+  const total = await getProblemsCount();
+
+  return (
+    <div className="container mx-auto py-10 max-w-4xl">
+      <ProblemListClient initialData={initialData} total={total} />
+    </div>
+  );
 }

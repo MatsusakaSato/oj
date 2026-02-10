@@ -9,7 +9,7 @@ import math from "@bytemd/plugin-math";
 export default function MdViewComponent({ value }: { value: string }) {
   const plugins = [gfm(), highlight(), math()];
   return (
-    <div className="bytemd-body">
+    <div className="bytemd-body markdown-body">
       <Viewer value={value} plugins={plugins} />
     </div>
   );

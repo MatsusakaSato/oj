@@ -18,13 +18,6 @@ const routes: Router[] = [
     requiresRole: [],
   },
   {
-    key: "problemList",
-    label: "题目列表",
-    href: "/problem-list",
-    showInMenu: true,
-    requiresRole: [],
-  },
-  {
     key: "userList",
     label: "用户列表",
     href: "/users",
