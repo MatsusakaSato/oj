@@ -46,7 +46,11 @@ export const getProblemsCount = async (): Promise<number> => {
     .where(eq(problemTable.isDeleted, false));
   return result[0]?.count || 0;
 };
-
+export const getProblemByTitle = async (title: string) => {
+  return await client.query.problemTable.findFirst({
+    where: and(eq(problemTable.title, title), eq(problemTable.isDeleted, false)),
+  });
+};
 export const updateProblem = async (
   id: number,
   problem: Partial<ProblemInsertModel>,

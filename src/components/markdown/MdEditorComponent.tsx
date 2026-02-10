@@ -1,6 +1,8 @@
 import gfm from "@bytemd/plugin-gfm";
 import { Editor, Viewer } from "@bytemd/react";
-const plugins = [gfm()];
+import math from "@bytemd/plugin-math";
+import highlight from "@bytemd/plugin-highlight";
+const plugins = [gfm(), math(), highlight()];
 
 export default function MdEditorComponent({
   value,

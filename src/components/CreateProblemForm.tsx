@@ -16,6 +16,24 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import MdEditorComponent from "@/components/markdown/MdEditorComponent";
 import { Plus, Trash2, Save } from "lucide-react";
+import { ProblemSelectModel } from "@/schema/problem.schema";
+import {
+  getProblemByTitle,
+  createProblem,
+  updateProblem,
+} from "@/repository/problem.repo";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const judgeCaseSchema = z.object({
   input: z.string().min(1, "输入不能为空"),
@@ -165,18 +183,23 @@ function TagsInput({ value, onChange }: TagsInputProps) {
 }
 
 interface CreateProblemFormProps {
-  initialValue?: Partial<CreateProblemFormValues>;
+  initialValue?: Partial<ProblemSelectModel>;
   onSubmit?: (data: CreateProblemFormValues) => void;
+  userId?: number;
 }
 
 export default function CreateProblemForm({
   initialValue,
-  onSubmit: onSubmitCallback = (data: CreateProblemFormValues) => {
-    console.log("=== 表单提交数据 ===");
-    console.log(data);
-    console.log("========================");
-  },
+  userId = 1,
 }: CreateProblemFormProps) {
+  const router = useRouter();
+  const [showDialog, setShowDialog] = React.useState(false);
+  const [dialogTitle, setDialogTitle] = React.useState("");
+  const [dialogDescription, setDialogDescription] = React.useState("");
+  const [pendingAction, setPendingAction] = React.useState<(() => void) | null>(
+    null,
+  );
+
   const form = useForm<CreateProblemFormValues>({
     resolver: zodResolver(createProblemSchema),
     defaultValues: {
@@ -186,8 +209,8 @@ export default function CreateProblemForm({
       answer: initialValue?.answer || "",
       judgeCase: initialValue?.judgeCase || [{ input: "", output: "" }],
       judgeConfig: initialValue?.judgeConfig || {
-        timeLimit: initialValue?.judgeConfig?.timeLimit || 1000,
-        memoryLimit: initialValue?.judgeConfig?.memoryLimit || 256,
+        timeLimit: 1000,
+        memoryLimit: 256,
       },
     },
   });
@@ -197,8 +220,69 @@ export default function CreateProblemForm({
     name: "judgeCase",
   });
 
-  const handleFormSubmit = (data: CreateProblemFormValues) => {
-    onSubmitCallback?.(data);
+  React.useEffect(() => {
+    if (initialValue) {
+      form.reset({
+        title: initialValue.title || "",
+        content: initialValue.content || "",
+        tags: initialValue.tags || [],
+        answer: initialValue.answer || "",
+        judgeCase: initialValue.judgeCase || [{ input: "", output: "" }],
+        judgeConfig: initialValue.judgeConfig || {
+          timeLimit: 1000,
+          memoryLimit: 256,
+        },
+      });
+    }
+  }, [initialValue, form]);
+
+  const handleFormSubmit = async (data: CreateProblemFormValues) => {
+    const exist = await getProblemByTitle(data.title);
+
+    if (exist) {
+      setDialogTitle(`题目 "${data.title}" 已经存在`);
+      setDialogDescription("是否要更新该题目？");
+      setPendingAction(() => async () => {
+        try {
+          const result = await updateProblem(exist.id, data);
+          if (result) {
+            toast.success("题目更新成功");
+          } else {
+            toast.error("题目更新失败");
+          }
+        } catch (error) {
+          toast.error("题目更新失败：" + error);
+          console.error("Update error:", error);
+        }
+        setShowDialog(false);
+      });
+    } else {
+      setDialogTitle(`确定要新增题目 "${data.title}" 吗？`);
+      setDialogDescription("此操作将创建一个新的题目。");
+      setPendingAction(() => async () => {
+        try {
+          const result = await createProblem({ ...data, userId } as any);
+          if (result) {
+            toast.success("题目创建成功");
+            router.refresh(); 
+          } else {
+            toast.error("题目创建失败");
+          }
+        } catch (error) {
+          toast.error("题目创建失败");
+          console.error("Create error:", error);
+        }
+        setShowDialog(false);
+      });
+    }
+
+    setShowDialog(true);
+  };
+
+  const handleConfirm = async () => {
+    if (pendingAction) {
+      await pendingAction();
+    }
   };
 
   return (
@@ -371,6 +455,19 @@ export default function CreateProblemForm({
           </div>
         </form>
       </Form>
+
+      <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{dialogDescription}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm}>确认</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

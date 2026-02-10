@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { ProblemBasicInfo } from "@/repository/problem.repo";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<ProblemBasicInfo>[] = [
   {
@@ -95,19 +96,15 @@ export const columns: ColumnDef<ProblemBasicInfo>[] = [
     header: "操作",
     size: 100,
     cell: ({ row }) => {
+      const router = useRouter();
       const problem = row.original;
       return (
         <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0"
-            onClick={() => {
-              console.log("编辑题目:", problem.id);
-            }}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
+          <Link href={`/create-problem/${problem.id}`}>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </Link>
           <Button
             variant="ghost"
             size="sm"
