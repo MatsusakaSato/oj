@@ -13,7 +13,7 @@ interface MainLayoutProps {
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <SessionProvider>
-      <div className="grid grid-cols-[200px_1fr] grid-rows-[64px_1fr] h-screen w-full overflow-hidden">
+      <div className="grid grid-cols-[200px_1fr] grid-rows-[64px_1fr] h-screen w-full overflow-y-hidden">
         {/* 顶部导航栏：跨2列，高度64px */}
         <header className="col-span-2 row-span-1 bg-card border-b z-10">
           <Header />

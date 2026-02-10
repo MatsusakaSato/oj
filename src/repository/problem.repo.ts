@@ -1,9 +1,16 @@
+"use server";
 import { client } from "@/schema/db.client";
 import {
   problemTable,
   ProblemInsertModel,
+  ProblemSelectModel,
 } from "@/schema/problem.schema";
 import { eq, and, sql } from "drizzle-orm";
+
+export type ProblemBasicInfo = Pick<
+  ProblemSelectModel,
+  "id" | "title" | "tags"
+>;
 
 export const createProblem = async (problem: ProblemInsertModel) => {
   const [result] = await client.insert(problemTable).values(problem);
@@ -16,12 +23,28 @@ export const getProblemById = async (id: number) => {
   });
 };
 
-export const getProblems = async (limit?: number, offset?: number) => {
+export const getProblems = async (
+  limit?: number,
+  offset?: number,
+): Promise<ProblemBasicInfo[]> => {
   return await client.query.problemTable.findMany({
     where: eq(problemTable.isDeleted, false),
+    columns: {
+      id: true,
+      title: true,
+      tags: true,
+    },
     limit,
     offset,
   });
+};
+
+export const getProblemsCount = async (): Promise<number> => {
+  const result = await client
+    .select({ count: sql<number>`count(*)` })
+    .from(problemTable)
+    .where(eq(problemTable.isDeleted, false));
+  return result[0]?.count || 0;
 };
 
 export const updateProblem = async (

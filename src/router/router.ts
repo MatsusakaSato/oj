@@ -20,7 +20,7 @@ const routes: Router[] = [
   {
     key: "problemList",
     label: "题目列表",
-    href: "/problems",
+    href: "/problem-list",
     showInMenu: true,
     requiresRole: [],
   },

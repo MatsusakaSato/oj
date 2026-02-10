@@ -1,0 +1,91 @@
+"use client";
+
+import { useState } from "react";
+import { columns } from "@/components/problem-table/ProblemColumns";
+import ProblemTable from "@/components/problem-table/ProblemTable";
+import { ProblemBasicInfo } from "@/repository/problem.repo";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
+interface ProblemListClientProps {
+  initialData: ProblemBasicInfo[];
+  total: number;
+}
+
+const PAGE_SIZE = 10;
+
+export default function ProblemListClient({
+  initialData,
+  total,
+}: ProblemListClientProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [data, setData] = useState<ProblemBasicInfo[]>(initialData);
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+    const offset = (page - 1) * PAGE_SIZE;
+    const response = await fetch(
+      `/api/problems?limit=${PAGE_SIZE}&offset=${offset}`
+    );
+    const newData = await response.json();
+    setData(newData);
+  };
+
+  return (
+    <div className="space-y-6">
+      <ProblemTable columns={columns} data={data} />
+
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() =>
+                  currentPage > 1 && handlePageChange(currentPage - 1)
+                }
+                className={
+                  currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                }
+              />
+            </PaginationItem>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+              (page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    onClick={() => handlePageChange(page)}
+                    isActive={currentPage === page}
+                    className="cursor-pointer"
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            )}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() =>
+                  currentPage < totalPages && handlePageChange(currentPage + 1)
+                }
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </div>
+  );
+}
