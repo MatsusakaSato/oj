@@ -1,5 +1,6 @@
 "use client";
 import CreateProblemForm from "@/components/CreateProblemForm";
+import useUser from "@/hooks/useUser";
 import { getProblemById } from "@/repository/problem.repo";
 import { ProblemSelectModel } from "@/schema/problem.schema";
 import { useParams } from "next/navigation";
@@ -8,7 +9,7 @@ import { useEffect, useState } from "react";
 export default function CreateProblemPage() {
   const [problemInfo, setProblemInfo] = useState<ProblemSelectModel>();
   const params = useParams();
-
+  const { user } = useUser();
   const id = params.id;
   useEffect(() => {
     const _ = async () => {
@@ -17,10 +18,9 @@ export default function CreateProblemPage() {
     };
     _();
   }, []);
-  //TODO 这里的用户id是写死的，应该改成动态获取用户id
   return (
     <>
-      <CreateProblemForm initialValue={problemInfo} userId={1} />
+      <CreateProblemForm initialValue={problemInfo} userId={user?.id} />
     </>
   );
 }
