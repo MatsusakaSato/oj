@@ -9,7 +9,7 @@ import {
   json,
 } from "drizzle-orm/mysql-core";
 import { JudgeResultEnum, Status } from "@/constants/enum";
-type JudgeCase = { input: string; output: string }[];
+export type JudgeCase = { input: string; output: string }[];
 type JudgeConfig = { timeLimit: number; memoryLimit: number };
 type Tags = string[];
 type JudgeInfo = {

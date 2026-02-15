@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getProblemByIdAction } from "@/action/problem.action";
+import { getProblemById } from "@/repository/problem.repo";
 import ProblemDetailClient from "./ProblemDetailClient";
 
 interface ProblemDetailPageProps {
@@ -11,7 +11,7 @@ interface ProblemDetailPageProps {
 export async function generateMetadata({
   params,
 }: ProblemDetailPageProps): Promise<Metadata> {
-  const problem = await getProblemByIdAction(Number(params.id));
+  const problem = await getProblemById(Number(params.id));
 
   if (!problem) {
     return {
@@ -27,7 +27,7 @@ export async function generateMetadata({
 export default async function ProblemDetailPage({
   params,
 }: ProblemDetailPageProps) {
-  const problem = await getProblemByIdAction(Number(params.id));
+  const problem = await getProblemById(Number(params.id));
 
   if (!problem) {
     return (
